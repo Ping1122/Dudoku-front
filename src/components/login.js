@@ -1,5 +1,6 @@
 import React from "react";
 import Joi from "joi-browser";
+import { toast } from "react-toastify";
 import Form from "./common/form";
 import auth from "../service/auth";
 
@@ -23,16 +24,16 @@ class Login extends Form {
   }
 
   doSubmit = async () => {
-    console.log("try to log in");
+    console.log("submit login form");
     try {
       const { data } = this.state;
       await auth.login(data.username, data.password);
       const { state } = this.props.location;
       window.location = state ? state.from.pathname : "/";
     } catch (ex) {
-      const errors = { ...this.state.errors };
-      errors.username = ex.response && ex.response.data;
-      this.setState({ errors });
+      console.log(ex.response);
+      const error = ex.response && ex.response.data;
+      toast.info(error);
     }
   };
 

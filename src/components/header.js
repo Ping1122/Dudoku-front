@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link, NavLink } from "react-router-dom";
+import UserDropDown from "./userDropDown";
+import logo from "../icon.png";
 
 class Header extends Component {
   getActiveClass(pathname) {
@@ -8,15 +10,30 @@ class Header extends Component {
       : "nav-link";
   }
 
+  renderUser = () => {
+    const loginActive = this.getActiveClass("/Login");
+    if (this.props.currentUser == null) {
+      return (
+        <NavLink className={loginActive} to="/login">
+          Login
+        </NavLink>
+      );
+    }
+    return <UserDropDown username={this.props.currentUser.username} />;
+  };
+
   render() {
     const homeActive = this.getActiveClass("/Home");
     const playActive = this.getActiveClass("/Play");
-    const loginActive = this.getActiveClass("/Login");
+
     return (
       <header className="masthead mb-auto">
         <div className="inner">
           <Link to="/">
-            <h3 className="masthead-brand">Dudoku</h3>
+            <h3 className="masthead-brand">
+              <img className="logo" src={logo} />
+              Dudoku
+            </h3>
           </Link>
           <nav className="nav nav-masthead justify-content-center">
             <NavLink className={homeActive} to="/home">
@@ -25,9 +42,7 @@ class Header extends Component {
             <NavLink className={playActive} to="/play">
               Play
             </NavLink>
-            <NavLink className={loginActive} to="/login">
-              Login
-            </NavLink>
+            {this.renderUser()}
           </nav>
         </div>
       </header>

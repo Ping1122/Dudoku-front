@@ -1,12 +1,13 @@
-import jwtDecode from "jwt-decode";
 import axios from "axios";
-import logger from "./log";
 import { toast } from "react-toastify";
+import logger from "./log";
 
 axios.interceptors.response.use(null, error => {
+  console.log("inside intercepter");
+  console.log(error.response);
   const expectedError =
     error.response &&
-    error.reponse.status >= 400 &&
+    error.response.status >= 400 &&
     error.response.status < 500;
   if (!expectedError) {
     logger.log(error);
@@ -16,7 +17,6 @@ axios.interceptors.response.use(null, error => {
 });
 
 function setJwt(jwt) {
-  console.log("setJwt called");
   console.log(jwt);
   axios.defaults.headers.common["x-auth-token"] = jwt;
 }
