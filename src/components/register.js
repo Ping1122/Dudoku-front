@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import Form from "./common/form";
 import auth from "../service/auth";
 
-class Login extends Form {
+class Register extends Form {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +41,7 @@ class Login extends Form {
   render() {
     return (
       <div className="login-form">
-        <h1 className="login-title">Login</h1>
+        <h1>Create an Account</h1>
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("username", "Username")}
           {this.renderInput("password", "Password", "password")}
@@ -59,4 +59,4 @@ class Login extends Form {
   }
 }
 
-export default Login;
+export default Register;

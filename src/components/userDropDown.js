@@ -70,8 +70,8 @@ class UserDropDown extends Component {
     const { username } = this.props;
     return (
       <div className={`dropdown`} ref={dropdown => (this.dropdown = dropdown)}>
-        <a
-          className="user-dropdown-item dropdown-toggle"
+        <button
+          className="user-dropdown-button dropdown-toggle"
           type="button"
           id="dropdownMenuButton"
           data-toggle="dropdown"
@@ -80,7 +80,7 @@ class UserDropDown extends Component {
           onMouseEnter={this.toggleDropdown}
         >
           Hello, {username}
-        </a>
+        </button>
         <ul
           className={`dropdown-menu pt-0 pl-2 ${this.state.show ? "show" : ""}`}
           aria-labelledby="dropdownMenuButton"

@@ -58,7 +58,7 @@ class Form extends Component {
       params.disabled = validationResult;
     }
     return (
-      <button {...params} className={`btn btn-primary ${disable}`}>
+      <button {...params} className={`login-button ${disable}`}>
         {label}
       </button>
     );

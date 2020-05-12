@@ -14,11 +14,16 @@ async function login(email, password) {
   localStorage.setItem(tokenKey, jwt.token);
 }
 
+function logout() {
+  localStorage.removeItem(tokenKey);
+}
+
 function getJwt() {
   return localStorage.getItem(tokenKey);
 }
 
 export default {
   login,
+  logout,
   getJwt
 };

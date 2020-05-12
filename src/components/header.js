@@ -27,11 +27,11 @@ class Header extends Component {
     const playActive = this.getActiveClass("/Play");
 
     return (
-      <header className="masthead mb-auto">
+      <header className="masthead">
         <div className="inner">
           <Link to="/">
             <h3 className="masthead-brand">
-              <img className="logo" src={logo} />
+              <img className="logo" alt="logo" src={logo} />
               Dudoku
             </h3>
           </Link>
