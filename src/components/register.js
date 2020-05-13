@@ -2,6 +2,7 @@ import React from "react";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
+import Input from "./common/input";
 import Form from "./common/form";
 import auth from "../service/auth";
 
@@ -9,19 +10,27 @@ class Register extends Form {
   constructor(props) {
     super(props);
     this.state = {
-      data: { username: "", password: "" },
+      data: { username: "", password: "", confirmPassword: "", email: "" },
       errors: {}
     };
     this.schema = {
       username: Joi.string()
         .required()
-        .email()
+        .min(3)
+        .max(50)
         .label("Username"),
       password: Joi.string()
         .required()
-        .label("Password")
+        .min(3)
+        .max(1000)
+        .label("Password"),
+      email: Joi.string()
+        .required()
+        .email()
+        .max(1000)
+        .label("Email")
     };
-    this.validateWhileTyping = false;
+    this.validateWhileTyping = true;
   }
 
   doSubmit = async () => {
@@ -38,20 +47,45 @@ class Register extends Form {
     }
   };
 
+  handleConfirmPasswordChange = ({ currentTarget: input }) => {
+    const { value } = input;
+    const errors = { ...this.state.errors };
+    if (this.validateWhileTyping) {
+      let errorMessage = "";
+      if (value !== this.state.data.password) {
+        errorMessage = "Those passwords didn't match. Try again.";
+      }
+
+      if (errorMessage) errors[input.name] = errorMessage;
+      else delete errors[input.name];
+    }
+    const data = { ...this.state.data };
+    data[input.name] = input.value;
+    this.setState({ data, errors });
+  };
+
   render() {
+    const { data, errors } = this.state;
     return (
       <div className="login-form">
         <h1>Create an Account</h1>
         <form onSubmit={this.handleSubmit}>
+          {this.renderInput("email", "Email")}
           {this.renderInput("username", "Username")}
           {this.renderInput("password", "Password", "password")}
-          {this.renderButton("Login")}
+          <Input
+            type="password"
+            name={"confirmPassword"}
+            value={data["confirmPassword"]}
+            label={"Confirm Password"}
+            onChange={this.handleConfirmPasswordChange}
+            error={errors["confirmPassword"]}
+          />
+          {this.renderButton("Sign up")}
           <br />
+
           <div className="login-link">
-            <NavLink to="/reset-password">Forget your password?</NavLink>
-          </div>
-          <div className="login-link">
-            <NavLink to="/register">Do not have an account? Sign up!</NavLink>
+            <NavLink to="/login">Already have an account? Log in.</NavLink>
           </div>
         </form>
       </div>

@@ -9,14 +9,14 @@ class Login extends Form {
   constructor(props) {
     super(props);
     this.state = {
-      data: { username: "", password: "" },
+      data: { email: "", password: "" },
       errors: {}
     };
     this.schema = {
-      username: Joi.string()
+      email: Joi.string()
         .required()
         .email()
-        .label("Username"),
+        .label("email"),
       password: Joi.string()
         .required()
         .label("Password")
@@ -28,7 +28,7 @@ class Login extends Form {
     console.log("submit login form");
     try {
       const { data } = this.state;
-      await auth.login(data.username, data.password);
+      await auth.login(data.email, data.password);
       const { state } = this.props.location;
       window.location = state ? state.from.pathname : "/";
     } catch (ex) {
@@ -43,7 +43,7 @@ class Login extends Form {
       <div className="login-form">
         <h1 className="login-title">Login</h1>
         <form onSubmit={this.handleSubmit}>
-          {this.renderInput("username", "Username")}
+          {this.renderInput("email", "Email")}
           {this.renderInput("password", "Password", "password")}
           {this.renderButton("Login")}
           <br />

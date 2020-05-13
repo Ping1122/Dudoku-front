@@ -5,6 +5,8 @@ import { decodeJwt } from "../util/decodeJwt";
 
 const apiEndpoint = apiUrl + "/api";
 
+async function registerUser() {}
+
 async function getCurrentUser() {
   try {
     const email = decodeJwt(auth.getJwt());

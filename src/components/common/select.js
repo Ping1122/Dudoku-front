@@ -1,4 +1,5 @@
 import React from "react";
+import ErrorMessage from "./errorMessage";
 
 const Select = ({ name, label, options, error, ...rest }) => {
   return (
@@ -12,7 +13,7 @@ const Select = ({ name, label, options, error, ...rest }) => {
           </option>
         ))}
       </select>
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <ErrorMessage error={error} />}
     </div>
   );
 };
