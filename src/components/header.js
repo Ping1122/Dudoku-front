@@ -39,7 +39,7 @@ class Header extends Component {
             <NavLink className={homeActive} to="/home">
               Home
             </NavLink>
-            <NavLink className={playActive} to="/play">
+            <NavLink className={playActive} to="/select-mode">
               Play
             </NavLink>
             {this.renderUser()}

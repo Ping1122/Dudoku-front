@@ -5,7 +5,13 @@ import { decodeJwt } from "../util/decodeJwt";
 
 const apiEndpoint = apiUrl + "/api";
 
-async function registerUser() {}
+async function registerUser(email, username, password) {
+  const { data: jwt } = await http.post(`${apiEndpoint}/register`, {
+    email,
+    username,
+    password
+  });
+}
 
 async function getCurrentUser() {
   try {
@@ -21,5 +27,6 @@ async function getCurrentUser() {
 }
 
 export default {
+  registerUser,
   getCurrentUser
 };

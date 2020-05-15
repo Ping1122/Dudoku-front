@@ -31,6 +31,7 @@ class Form extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    console.log("handle Submit");
     const errors = this.validate();
     this.setState({ errors: errors || {} });
     if (errors) return;

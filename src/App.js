@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import Header from "./components/header";
 import Home from "./components/home";
-import Play from "./components/play";
+import SelectMode from "./components/selectMode";
 import Profile from "./components/profile";
 import History from "./components/history";
 import Settings from "./components/settings";
@@ -14,6 +14,7 @@ import Login from "./components/login";
 import Logout from "./components/logout";
 import Register from "./components/register";
 import Footer from "./components/footer";
+import Game from "./components/game";
 import NotFound from "./components/notFound";
 import user from "./service/user";
 
@@ -53,13 +54,14 @@ class App extends Component {
           <div className="main">
             <Switch>
               <Route path="/home" component={Home} />
-              <Route path="/play" component={Play} />
+              <Route path="/select-mode" component={SelectMode} />
               <Route path="/login" component={Login} />
               <Route path="/profile" component={Profile} />
               <Route path="/history" component={History} />
               <Route path="/settings" component={Settings} />
               <Route path="/logout" component={Logout} />
               <Route path="/register" component={Register} />
+              <Route path="/game" component={Game} />
               <Route path="/not-found" component={NotFound} />
               <Redirect from="/" exact to="/home" />
               <Redirect to="/not-found" />

@@ -63,7 +63,7 @@ body {
 
 .head {
   width: 100%;
-  height: 60px;
+  height: 40px;
   padding-top: 20px;
   padding-left: 50px;
   padding-right: 50px;
@@ -216,4 +216,84 @@ body {
 .login-link {
   text-decoration: underline;
   margin-top: 1rem;
+}
+
+.game-container {
+  width: 85%;
+  min-height: 550px;
+  margin-top: 2rem;
+}
+
+.mode-select {
+  background-color: #52a6d1;
+  border-radius: 0px;
+  display: inline-block;
+  cursor: pointer;
+  color: #fff;
+  padding: 5px 20px;
+  width: 100%;
+  font-size: 25px;
+  border-radius: 5px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-left: 2rem;
+  height: 125px;
+  display: table;
+}
+
+.child {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.game {
+  background-color: #fff;
+}
+
+.mode-img {
+  width: 60%;
+  display: inline-block;
+  position: sticky;
+  transition: opacity 0.2s, visibility 0.2s, margin-top 0s 0.2s;
+}
+
+li {
+  list-style: none;
+}
+
+.mode-form {
+  margin: 0 auto;
+  margin-top: 3rem;
+  width: 50%;
+}
+
+.mode-button {
+  box-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
+  background-color: #52a6d1;
+  cursor: pointer;
+  color: #ffffff;
+  padding: 5px 15px;
+  padding-left: 15px;
+  width: 25%;
+  text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.button-active {
+  background-color: #3a7695;
+}
+
+.btn-group {
+  border-radius: 5px;
+  width: 80%;
+}
+
+.last-button {
+  border-radius: 0 5px 5px 0;
+}
+
+.first-button {
+  border-radius: 5px 0 0 5px;
 }

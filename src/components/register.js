@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import Input from "./common/input";
 import Form from "./common/form";
-import auth from "../service/auth";
+import user from "../service/user";
 
 class Register extends Form {
   constructor(props) {
@@ -24,6 +24,7 @@ class Register extends Form {
         .min(3)
         .max(1000)
         .label("Password"),
+      confirmPassword: Joi.string(),
       email: Joi.string()
         .required()
         .email()
@@ -34,14 +35,13 @@ class Register extends Form {
   }
 
   doSubmit = async () => {
-    console.log("submit login form");
+    console.log("submit register form");
     try {
       const { data } = this.state;
-      await auth.login(data.username, data.password);
-      const { state } = this.props.location;
-      window.location = state ? state.from.pathname : "/";
+      await user.registerUser(data.email, data.username, data.password);
+      this.props.history.push("/login");
     } catch (ex) {
-      console.log(ex.response);
+      console.log(ex);
       const error = ex.response && ex.response.data.message;
       toast.info(error);
     }
@@ -83,7 +83,6 @@ class Register extends Form {
           />
           {this.renderButton("Sign up")}
           <br />
-
           <div className="login-link">
             <NavLink to="/login">Already have an account? Log in.</NavLink>
           </div>
