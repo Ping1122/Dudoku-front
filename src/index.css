@@ -219,9 +219,8 @@ body {
 }
 
 .game-container {
-  width: 85%;
+  width: 90%;
   min-height: 550px;
-  margin-top: 2rem;
 }
 
 .mode-select {
@@ -296,4 +295,181 @@ li {
 
 .first-button {
   border-radius: 5px 0 0 5px;
+}
+
+.cell-value svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.game-cell {
+  flex-basis: 11.1111%;
+  box-sizing: border-box;
+  position: relative;
+  border-right: 1px solid #bec6d4;
+  border-bottom: 1px solid #bec6d4;
+  cursor: pointer;
+}
+
+.game-cell,
+.game-row {
+  display: flex;
+}
+.game-table,
+.game-table:after {
+  display: block;
+  height: 100%;
+}
+
+.game-table tbody:after {
+  display: block;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 33.1%;
+  height: 33.5%;
+  border-top: 2px solid #344861;
+  border-bottom: 2px solid #344861;
+  pointer-events: none;
+}
+
+/* line */
+
+.game-row,
+.game-table tbody:after {
+  box-sizing: border-box;
+  width: 100%;
+}
+.game-table:after {
+  content: "";
+  position: absolute;
+  left: 33.2%;
+  width: 33.41%;
+  top: 0;
+  border-left: 2px solid #344861;
+  border-right: 2px solid #344861;
+  pointer-events: none;
+}
+
+.game-table tbody {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.game-table {
+  border: 2px solid #344861;
+  position: relative;
+}
+.game-cell:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.game-container {
+  display: inline-block;
+}
+
+.game-form {
+  margin: 0 auto;
+  margin-top: 6rem;
+  width: 80%;
+}
+
+.numpad-wrapper .numpad {
+  position: absolute;
+  border: solid;
+  border-color: #344861;
+  border-width: 2px;
+  background-color: #fff;
+}
+
+.numpad-wrapper .numpad-item {
+  position: relative;
+  width: 33.3333%;
+  height: 25%;
+  box-sizing: border-box;
+  padding: 10% 0 0 0;
+  text-align: center;
+  border-color: #bec6d4;
+  border-style: solid;
+  border-width: 1px 0 0 1px;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.numpad-wrapper .numpad {
+  width: 16vw;
+  height: 24vw;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.6vw;
+}
+
+.numpad-wrapper {
+  width: 16vw;
+  height: 22.5vw;
+  display: inline-block;
+}
+
+.numpad-icon {
+  width: 25%;
+}
+
+.game-controls-label {
+  font-size: 14px;
+  color: #344861;
+  text-decoration: none !important;
+  text-shadow: none;
+}
+
+.numpad:after {
+  box-sizing: border-box;
+  width: 100%;
+  content: "";
+  position: absolute;
+  top: 75%;
+  height: 5%;
+  border-top: 2px solid #344861;
+  pointer-events: none;
+}
+
+.numpad-wrapper .numpad-item:hover {
+  background-color: #f3f6fa;
+}
+.player-card {
+  background-color: #fff;
+  border: 1px solid #344861;
+  width: 16vw;
+  height: 11vw;
+  margin-bottom: 1vw;
+  display: inline-block;
+}
+
+.timer,
+.time {
+  height: 2vw;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.time {
+  margin-bottom: -6px;
+}
+
+.game .selected {
+  background-color: #bbdefb;
+}
+.game .conflict {
+  background-color: #e2e7ed;
+}
+.game .same {
+  background-color: #cbdbed;
+}
+.game .hover {
+  background-color: #def;
 }

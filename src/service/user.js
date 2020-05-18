@@ -6,7 +6,7 @@ import { decodeJwt } from "../util/decodeJwt";
 const apiEndpoint = apiUrl + "/api";
 
 async function registerUser(email, username, password) {
-  const { data: jwt } = await http.post(`${apiEndpoint}/register`, {
+  await http.post(`${apiEndpoint}/register`, {
     email,
     username,
     password
@@ -19,7 +19,6 @@ async function getCurrentUser() {
     const currentUser = await http.get(`${apiEndpoint}/me`, {
       username: email
     });
-    console.log(currentUser);
     return currentUser;
   } catch (ex) {
     return null;
