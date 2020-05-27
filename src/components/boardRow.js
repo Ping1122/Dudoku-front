@@ -11,7 +11,7 @@ const BoardRow = props => {
     handleMouseLeaveCell
   } = props;
   return (
-    <tr class="game-row">
+    <tr className="game-row">
       {row.map((number, index) => {
         return (
           <BoardCell

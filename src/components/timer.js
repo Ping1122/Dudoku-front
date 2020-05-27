@@ -4,6 +4,7 @@ import Clock from "../timer.png";
 class Timer extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       min: 0,
       sec: 0
@@ -11,6 +12,13 @@ class Timer extends Component {
   }
 
   componentDidMount() {
+    const startTime = Math.floor(this.props.startTime / 1000);
+    const sec = startTime % 60;
+    const min = Math.floor(startTime / 60);
+    this.setState({
+      min,
+      sec
+    });
     setInterval(() => {
       let { min, sec } = this.state;
       sec += 1;

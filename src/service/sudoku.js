@@ -6,25 +6,48 @@ const apiEndpoint = apiUrl + "/api/sudoku";
 async function getSudokuAndSolution(level) {
   const { data } = await http.get(`${apiEndpoint}/${level}`);
   const sudoku = {
-    board: boardStringToList(data.board),
-    solution: boardStringToList(data.solution)
+    board: data.board,
+    solution: data.solution,
+    origin: data.origin,
+    timeExpired: data.timeExpired,
+    mistakes: data.mistakes,
+    ended: data.ended,
+    remainingCells: data.remainingCells
   };
   return sudoku;
 }
 
-function boardStringToList(boardString) {
-  if (boardString.length !== 81) return null;
-  let boardList = [];
-  for (let i = 0; i < 9; i++) {
-    let temp = [];
-    for (let j = 0; j < 9; j++) {
-      temp.push(parseInt(boardString.charAt(i * 9 + j)));
+async function fillCell(cell, value) {
+  const [x, y] = cell;
+  const { data } = await http.put(`${apiEndpoint}/cell`, {
+    x,
+    y,
+    value
+  });
+  return data;
+}
+
+async function deleteCell(cell) {
+  const [x, y] = cell;
+  const { data } = await http.delete(`${apiEndpoint}/cell`, {
+    data: {
+      x,
+      y,
+      value: 1
     }
-    boardList.push(temp);
-  }
-  return boardList;
+  });
+  return data;
+}
+
+async function endGame(reason) {
+  await http.put(apiEndpoint, {
+    reason
+  });
 }
 
 export default {
-  getSudokuAndSolution
+  getSudokuAndSolution,
+  fillCell,
+  deleteCell,
+  endGame
 };

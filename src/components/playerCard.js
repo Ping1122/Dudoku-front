@@ -1,7 +1,12 @@
 import React from "react";
 
-const PlayerCard = () => {
-  return <div className="player-card"></div>;
+const PlayerCard = props => {
+  const { mistakes } = props;
+  return (
+    <div className="player-card">
+      <p>mistakes:{mistakes}</p>
+    </div>
+  );
 };
 
 export default PlayerCard;

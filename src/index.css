@@ -473,3 +473,6 @@ li {
 .game .hover {
   background-color: #def;
 }
+.game .incorrect {
+  background-color: #f7d0d6;
+}

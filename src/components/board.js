@@ -30,7 +30,7 @@ class Board extends Component {
   render() {
     return (
       <div className="game-container">
-        <div id="game" class="game">
+        <div id="game" className="game">
           <table className="game-table">
             <tbody>{this.renderBoardRows()}</tbody>
           </table>
