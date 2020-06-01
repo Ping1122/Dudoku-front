@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import BoardRow from "./boardRow";
+import EndGame from "./endGame";
 
 class Board extends Component {
   renderBoardRows = () => {
     const {
       board,
       color,
+      digitColor,
       handleSelectCell,
       handleMouseEnterCell,
       handleMouseLeaveCell
@@ -18,6 +20,7 @@ class Board extends Component {
           pos={i}
           row={board[i]}
           color={color[i]}
+          digitColor={digitColor[i]}
           handleSelectCell={handleSelectCell}
           handleMouseEnterCell={handleMouseEnterCell}
           handleMouseLeaveCell={handleMouseLeaveCell}
@@ -27,13 +30,32 @@ class Board extends Component {
     return rows;
   };
 
+  renderGame = () => {
+    return (
+      <table className="game-table">
+        <tbody>{this.renderBoardRows()}</tbody>
+      </table>
+    );
+  };
+
+  renderEndGame = (reason, remainingCells, timeExpired) => {
+    return (
+      <EndGame
+        reason={reason}
+        remainingCells={remainingCells}
+        timeExpired={timeExpired}
+      />
+    );
+  };
+
   render() {
+    const { ended, reason, remainingCells, timeExpired } = this.props;
     return (
       <div className="game-container">
         <div id="game" className="game">
-          <table className="game-table">
-            <tbody>{this.renderBoardRows()}</tbody>
-          </table>
+          {ended
+            ? this.renderEndGame(reason, remainingCells, timeExpired)
+            : this.renderGame()}
         </div>
       </div>
     );

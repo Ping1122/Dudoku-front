@@ -6,6 +6,7 @@ const BoardRow = props => {
     row,
     pos,
     color,
+    digitColor,
     handleSelectCell,
     handleMouseEnterCell,
     handleMouseLeaveCell
@@ -19,6 +20,7 @@ const BoardRow = props => {
             pos={[pos, index]}
             number={number}
             color={color[index]}
+            digitColor={digitColor[index]}
             handleSelectCell={handleSelectCell}
             handleMouseEnterCell={handleMouseEnterCell}
             handleMouseLeaveCell={handleMouseLeaveCell}

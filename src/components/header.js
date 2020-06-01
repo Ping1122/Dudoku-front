@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, NavLink } from "react-router-dom";
 import UserDropDown from "./userDropDown";
+import PlayDropDown from "./playDropDown";
 import logo from "../icon.png";
 
 class Header extends Component {
@@ -39,9 +40,7 @@ class Header extends Component {
             <NavLink className={homeActive} to="/home">
               Home
             </NavLink>
-            <NavLink className={playActive} to="/select-mode">
-              Play
-            </NavLink>
+            <PlayDropDown />
             {this.renderUser()}
           </nav>
         </div>

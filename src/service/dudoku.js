@@ -1,10 +1,11 @@
 import http from "./http";
 import { apiUrl } from "../config.json";
 
-const apiEndpoint = apiUrl + "/api/sudoku";
+const apiEndpoint = apiUrl + "/api/dudoku";
 
 async function getSudokuAndSolution(level) {
   const { data } = await http.get(`${apiEndpoint}/${level}`);
+  console.log(data);
   const sudoku = {
     board: data.board,
     solution: data.solution,
@@ -12,7 +13,9 @@ async function getSudokuAndSolution(level) {
     timeExpired: data.timeExpired,
     mistakes: data.mistakes,
     ended: data.ended,
-    remainingCells: data.remainingCells
+    remainingCells: data.remainingCells,
+    players: data.players,
+    filled: data.filled
   };
   return sudoku;
 }

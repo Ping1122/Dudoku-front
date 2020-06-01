@@ -139,8 +139,7 @@ body {
 }
 
 .dropdown {
-  display: inline-block;
-  margin-right: 20px;
+  display: inline;
   margin-left: 1rem;
 }
 
@@ -148,9 +147,6 @@ body {
   background: transparent;
   border-left-width: thick;
   border-color: rgb(255, 255, 255);
-  /* background-color: rgba(255, 255, 255, 0.1);
-  border-width: thick;
-  border-color: rgb(66, 133, 167, 0.25); */
 }
 
 .dropdown-menu a:hover {
@@ -219,8 +215,10 @@ body {
 }
 
 .game-container {
+  position: relative;
   width: 90%;
   min-height: 550px;
+  display: inline-block;
 }
 
 .mode-select {
@@ -247,6 +245,10 @@ body {
 
 .game {
   background-color: #fff;
+}
+
+.end-game {
+  background-color: #52a6d1;
 }
 
 .mode-img {
@@ -302,6 +304,18 @@ li {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.default svg path {
+  fill: #344861;
+}
+
+.player1 svg path {
+  fill: #4a90e2;
+}
+
+.player2 svg path {
+  fill: #fc3d3e;
 }
 
 .game-cell {
@@ -368,10 +382,6 @@ li {
   content: "";
   display: block;
   padding-bottom: 100%;
-}
-
-.game-container {
-  display: inline-block;
 }
 
 .game-form {
@@ -458,7 +468,7 @@ li {
 }
 
 .time {
-  margin-bottom: -6px;
+  margin-bottom: -5px;
 }
 
 .game .selected {
@@ -475,4 +485,18 @@ li {
 }
 .game .incorrect {
   background-color: #f7d0d6;
+}
+
+.new-game-button {
+  box-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
+  background-color: #52a6d1;
+  border-radius: 5px;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  padding: 10px 20px;
+  width: 60%;
+  text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }

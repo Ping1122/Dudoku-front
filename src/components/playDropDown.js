@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 
-class UserDropDown extends Component {
+class PlayDropDown extends Component {
   constructor(props) {
     super(props);
-
     this.toggleDropdown = this.toggleDropdown.bind(this);
     this.removeDropdown = this.removeDropdown.bind(this);
     this.handleBlurEvent = this.handleBlurEvent.bind(this);
     this.hasFocus = this.hasFocus.bind(this);
-
     this.state = {
       show: false,
       mouseInDropdown: false
@@ -83,11 +81,10 @@ class UserDropDown extends Component {
   };
 
   render() {
-    const { username } = this.props;
     return (
-      <div className={`dropdown`} ref={dropdown => (this.dropdown = dropdown)}>
+      <span className="dropdown" ref={dropdown => (this.dropdown = dropdown)}>
         <button
-          className="user-dropdown-button dropdown-toggle"
+          className="user-dropdown-button "
           type="button"
           id="dropdownMenuButton"
           data-toggle="dropdown"
@@ -96,7 +93,7 @@ class UserDropDown extends Component {
           onMouseEnter={this.toggleDropdown}
           onMouseLeave={this.handleMouseLeaveButton}
         >
-          Hello, {username}
+          Play
         </button>
         <ul
           className={`dropdown-menu pt-0 pl-2 ${this.state.show ? "show" : ""}`}
@@ -105,29 +102,19 @@ class UserDropDown extends Component {
           onMouseLeave={this.removeDropdown}
         >
           <li className="my-1">
-            <NavLink className="user-dropdown-item " to="/profile">
-              Your profile
+            <NavLink className="user-dropdown-item " to="/sudoku/select-mode">
+              Single Player
             </NavLink>
           </li>
           <li className="my-1">
-            <NavLink className="user-dropdown-item" to="/history">
-              Your history
-            </NavLink>
-          </li>
-          <li className="my-1">
-            <NavLink className="user-dropdown-item" to="/settings">
-              Settings
-            </NavLink>
-          </li>
-          <li className="my-1">
-            <NavLink className="user-dropdown-item" to="/logout">
-              Log out
+            <NavLink className="user-dropdown-item" to="/dudoku/select-mode">
+              Double Players
             </NavLink>
           </li>
         </ul>
-      </div>
+      </span>
     );
   }
 }
 
-export default UserDropDown;
+export default PlayDropDown;

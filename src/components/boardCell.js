@@ -14,10 +14,12 @@ const BoardCell = props => {
     number,
     pos,
     color,
+    digitColor,
     handleSelectCell,
     handleMouseEnterCell,
     handleMouseLeaveCell
   } = props;
+  const dc = digitColor === "" ? "default" : digitColor;
   let value;
   switch (number) {
     case 1:
@@ -57,7 +59,7 @@ const BoardCell = props => {
       onMouseEnter={() => handleMouseEnterCell(pos)}
       onMouseLeave={() => handleMouseLeaveCell(pos)}
     >
-      <div className="cell-value">{value}</div>
+      <div className={`cell-value ${dc}`}>{value}</div>
     </td>
   );
 };

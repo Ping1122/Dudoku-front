@@ -14,7 +14,8 @@ import Login from "./components/login";
 import Logout from "./components/logout";
 import Register from "./components/register";
 import Footer from "./components/footer";
-import Game from "./components/game";
+import Sudoku from "./components/sudoku";
+import Dudoku from "./components/dudoku";
 import NotFound from "./components/notFound";
 import user from "./service/user";
 
@@ -30,15 +31,12 @@ class App extends Component {
     const res = await user.getCurrentUser();
     if (res === null) return;
     const { data: currentUser } = res;
-    console.log(currentUser);
     if (currentUser != null) {
       this.setState({ currentUser });
     }
   }
 
   render() {
-    console.log("app.js state");
-    console.log(this.state);
     return (
       <div className="App">
         <ToastContainer />
@@ -54,14 +52,16 @@ class App extends Component {
           <div className="main">
             <Switch>
               <Route path="/home" component={Home} />
-              <Route path="/select-mode" component={SelectMode} />
+              <Route path="/sudoku/select-mode" component={SelectMode} />
+              <Route path="/dudoku/select-mode" component={SelectMode} />
               <Route path="/login" component={Login} />
               <Route path="/profile" component={Profile} />
               <Route path="/history" component={History} />
               <Route path="/settings" component={Settings} />
               <Route path="/logout" component={Logout} />
               <Route path="/register" component={Register} />
-              <Route path="/game" component={Game} />
+              <Route path="/sudoku" component={Sudoku} />
+              <Route path="/dudoku" component={Dudoku} />
               <Route path="/not-found" component={NotFound} />
               <Redirect from="/" exact to="/home" />
               <Redirect to="/not-found" />

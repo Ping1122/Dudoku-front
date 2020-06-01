@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
 import sudoku from "../service/sudoku";
+import emitter from "../service/emitter";
 import Board from "./board";
 import Numpad from "./numpad";
 import PlayerCard from "./playerCard";
 import Timer from "./timer";
 
-class Game extends Component {
+class Sudoku extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,47 +38,102 @@ class Game extends Component {
         ["", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "", ""]
       ],
+      digitColor: [
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""]
+      ],
       ended: false,
       reason: "",
       remainingCells: 81
     };
     this.endGameTimeoutTicket = null;
+    this.keyToNumMap = {
+      q: 1,
+      w: 2,
+      e: 3,
+      a: 4,
+      s: 5,
+      d: 6,
+      z: 7,
+      x: 8,
+      c: 9
+    };
   }
 
   getSudokuAndSolution = async () => {
-    const level = window.location.pathname.substring(6);
+    const level = window.location.pathname.substring(8);
     const state = await sudoku.getSudokuAndSolution(level);
-    const { board, solution } = state;
+    const { board, solution, origin } = state;
     state.color = this.setIncorrectColor(board, solution, this.state.color);
+    state.digitColor = this.setDigitColor(origin, this.state.digitColor);
     this.setState(state);
     return state.timeExpired;
   };
 
-  handleEndGame = async () => {
-    console.log("endgame timeout");
+  setDigitColor = (origin, digitColor) => {
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (origin[i][j] === 2) {
+          digitColor[i][j] = "player1";
+        }
+      }
+    }
+    return digitColor;
+  };
+
+  handleEndGame = async reason => {
+    console.log(`endgame ${reason}`);
     try {
-      await sudoku.endGame("timeout");
+      const { timeExpired } = await sudoku.endGame(reason);
+      console.log(timeExpired);
       this.setState({
         ended: true,
-        reason: "timeout"
+        reason,
+        timeExpired
       });
     } catch (ex) {
+      console.log(ex);
       const error = ex.response && ex.response.data.message;
       toast.info(error);
     }
+    emitter.emit("Game Ended", { reason });
     console.log(this.state);
   };
 
   endGameAfterTimeout = timeExpired => {
     this.endGameTimeoutTicket = setTimeout(
-      this.handleEndGame,
+      () => this.handleEndGame("timeout"),
       20 * 60 * 1000 - timeExpired
     );
+  };
+
+  handleKeyDown = event => {
+    console.log(event);
+    if (event.keyCode >= 49 && event.keyCode <= 57) {
+      this.handleFillCell(event.keyCode - 48);
+      return;
+    }
+    const num = this.keyToNumMap[event.key];
+    if (num) {
+      this.handleFillCell(num);
+    }
   };
 
   async componentDidMount() {
     const timeExpired = await this.getSudokuAndSolution();
     this.endGameAfterTimeout(timeExpired);
+    document.addEventListener("keydown", this.handleKeyDown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown, false);
   }
 
   handleSelectCell = cell => {
@@ -105,40 +161,9 @@ class Game extends Component {
     });
   };
 
-  handleTooManyMistakes = async () => {
-    console.log("endgame mistakes");
-    try {
-      await sudoku.endGame("mistake");
-      this.setState({
-        ended: true,
-        reason: "mistake"
-      });
-    } catch (ex) {
-      const error = ex.response && ex.response.data.message;
-      toast.info(error);
-    }
-    clearTimeout(this.endGameTimeoutTicket);
-    console.log(this.state);
-  };
-
-  handleCompleted = async () => {
-    console.log("endgame completed");
-    try {
-      await sudoku.endGame("complete");
-      this.setState({
-        ended: true,
-        reason: "complete"
-      });
-    } catch (ex) {
-      const error = ex.response && ex.response.data.message;
-      toast.info(error);
-    }
-    clearTimeout(this.endGameTimeoutTicket);
-    console.log(this.state);
-  };
-
   handleFillCell = async num => {
-    const { origin, board, selectedCell } = this.state;
+    const { ended, origin, board, selectedCell, digitColor } = this.state;
+    if (ended || !selectedCell || !board) return;
     const [x, y] = selectedCell;
     if (origin[x][y] === 1) return;
     try {
@@ -151,15 +176,17 @@ class Game extends Component {
           mistakes
         });
         if (mistakes >= 3) {
-          this.handleTooManyMistakes();
+          this.handleEndGame("mistake");
         }
       }
+      digitColor[x][y] = "player1";
       board[x][y] = num;
       this.setState({
-        board
+        board,
+        digitColor
       });
       if (remainingCells == 0) {
-        this.handleCompleted();
+        this.handleEndGame("complete");
       }
       this.setColor(selectedCell);
     } catch (ex) {
@@ -169,15 +196,17 @@ class Game extends Component {
   };
 
   handleDeleteCell = async () => {
-    const { origin, board, selectedCell } = this.state;
+    const { origin, board, selectedCell, digitColor } = this.state;
     if (!selectedCell) return;
     const [x, y] = selectedCell;
     if (origin[x][y] === 1) return;
     try {
       const result = await sudoku.deleteCell(selectedCell);
       board[x][y] = 0;
+      digitColor[x][y] = "";
       this.setState({
-        board
+        board,
+        digitColor
       });
     } catch (ex) {
       const error = ex.response && ex.response.data.message;
@@ -256,30 +285,30 @@ class Game extends Component {
   };
 
   handleGiveUp = async () => {
-    console.log("endgame giveup");
-    try {
-      await sudoku.endGame("giveup");
-      this.setState({
-        ended: true,
-        reason: "giveup"
-      });
-    } catch (ex) {
-      const error = ex.response && ex.response.data.message;
-      toast.info(error);
-    }
-    clearTimeout(this.endGameTimeoutTicket);
-    console.log(this.state);
+    await this.handleEndGame("giveup");
   };
 
   render() {
-    const { board, color, mistakes, timeExpired } = this.state;
+    const {
+      board,
+      color,
+      digitColor,
+      mistakes,
+      ended,
+      reason,
+      timeExpired,
+      remainingCells
+    } = this.state;
     return (
       <div className="game-form">
-        {timeExpired === -1 ? null : <Timer startTime={timeExpired} />}
+        {timeExpired === -1 ? null : (
+          <Timer startTime={timeExpired} ended={ended} />
+        )}
         <div className="row text-center p-0">
-          <div className="col-md-3 text-center p-0">
+          <div className="col-md-4 text-center p-0">
             <PlayerCard mistakes={mistakes} />
             <Numpad
+              ended={ended}
               handleFillCell={this.handleFillCell}
               handleDeleteCell={this.handleDeleteCell}
               handleGiveUp={this.handleGiveUp}
@@ -287,19 +316,16 @@ class Game extends Component {
           </div>
           <div className="col-md-6 p-0">
             <Board
+              ended={ended}
+              reason={reason}
+              remainingCells={remainingCells}
+              timeExpired={timeExpired}
               board={board}
               color={color}
+              digitColor={digitColor}
               handleSelectCell={this.handleSelectCell}
               handleMouseEnterCell={this.handleMouseEnterCell}
               handleMouseLeaveCell={this.handleMouseLeaveCell}
-            />
-          </div>
-          <div className="col-md-3 p-0">
-            <PlayerCard />
-            <Numpad
-              handleFillCell={this.handleFillCell}
-              handleDeleteCell={this.handleDeleteCell}
-              handleGiveUp={this.handleGiveUp}
             />
           </div>
         </div>
@@ -308,4 +334,4 @@ class Game extends Component {
   }
 }
 
-export default Game;
+export default Sudoku;

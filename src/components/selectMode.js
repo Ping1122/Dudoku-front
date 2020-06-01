@@ -25,11 +25,13 @@ class SelectMode extends Component {
 
   render() {
     const labelsLength = this.labels.length;
-    const selectedLabel = this.state.selectedLabel;
+    const { selectedLabel } = this.state;
     const selectInfo = this.info[selectedLabel];
+    const mode = this.props.location.pathname.split("/")[1];
+    const modeCap = mode.charAt(0).toUpperCase() + mode.slice(1);
     return (
       <div className="mode-form">
-        <h1>Select Difficulty</h1>
+        <h1>Select {modeCap} Difficulty</h1>
         <div class="btn-group">
           {this.labels.map((label, index) => {
             let ends = "";
@@ -41,6 +43,7 @@ class SelectMode extends Component {
                 key={label}
                 label={label}
                 ends={ends}
+                mode={mode}
                 onMouseEnter={this.handleMouseEnter}
               />
             );
