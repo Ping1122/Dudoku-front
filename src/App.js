@@ -27,13 +27,10 @@ class App extends Component {
     };
   }
 
-  async componentDidMount() {
-    const res = await user.getCurrentUser();
-    if (res === null) return;
-    const { data: currentUser } = res;
-    if (currentUser != null) {
-      this.setState({ currentUser });
-    }
+  componentDidMount() {
+    const currentUser = user.getCurrentUser();
+    if (currentUser === null) return;
+    this.setState({ currentUser });
   }
 
   render() {
@@ -61,7 +58,12 @@ class App extends Component {
               <Route path="/logout" component={Logout} />
               <Route path="/register" component={Register} />
               <Route path="/sudoku" component={Sudoku} />
-              <Route path="/dudoku" component={Dudoku} />
+              <Route
+                path="/dudoku"
+                render={props => (
+                  <Dudoku {...props} currentUser={this.state.currentUser} />
+                )}
+              />
               <Route path="/not-found" component={NotFound} />
               <Redirect from="/" exact to="/home" />
               <Redirect to="/not-found" />

@@ -185,7 +185,7 @@ class Sudoku extends Component {
         board,
         digitColor
       });
-      if (remainingCells == 0) {
+      if (remainingCells === 0) {
         this.handleEndGame("complete");
       }
       this.setColor(selectedCell);
@@ -201,7 +201,7 @@ class Sudoku extends Component {
     const [x, y] = selectedCell;
     if (origin[x][y] === 1) return;
     try {
-      const result = await sudoku.deleteCell(selectedCell);
+      await sudoku.deleteCell(selectedCell);
       board[x][y] = 0;
       digitColor[x][y] = "";
       this.setState({
@@ -316,6 +316,7 @@ class Sudoku extends Component {
           </div>
           <div className="col-md-6 p-0">
             <Board
+              mode="sudoku"
               ended={ended}
               reason={reason}
               remainingCells={remainingCells}

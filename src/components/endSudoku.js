@@ -1,7 +1,7 @@
 import React from "react";
 import Clock from "../timer.png";
 
-const EndGame = props => {
+const EndSudoku = props => {
   const { reason, remainingCells, timeExpired } = props;
   console.log(reason);
   const message = {
@@ -42,4 +42,4 @@ const EndGame = props => {
   );
 };
 
-export default EndGame;
+export default EndSudoku;

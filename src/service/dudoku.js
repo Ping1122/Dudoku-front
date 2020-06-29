@@ -7,6 +7,7 @@ async function getSudokuAndSolution(level) {
   const { data } = await http.get(`${apiEndpoint}/${level}`);
   console.log(data);
   const sudoku = {
+    id: data.id,
     board: data.board,
     solution: data.solution,
     origin: data.origin,

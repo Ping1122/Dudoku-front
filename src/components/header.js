@@ -25,8 +25,6 @@ class Header extends Component {
 
   render() {
     const homeActive = this.getActiveClass("/Home");
-    const playActive = this.getActiveClass("/Play");
-
     return (
       <header className="masthead">
         <div className="inner">

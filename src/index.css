@@ -315,7 +315,7 @@ li {
 }
 
 .player2 svg path {
-  fill: #fc3d3e;
+  fill: #fe7f9c;
 }
 
 .game-cell {
@@ -451,14 +451,6 @@ li {
 .numpad-wrapper .numpad-item:hover {
   background-color: #f3f6fa;
 }
-.player-card {
-  background-color: #fff;
-  border: 1px solid #344861;
-  width: 16vw;
-  height: 11vw;
-  margin-bottom: 1vw;
-  display: inline-block;
-}
 
 .timer,
 .time {
@@ -468,7 +460,7 @@ li {
 }
 
 .time {
-  margin-bottom: -5px;
+  margin-bottom: 3px;
 }
 
 .game .selected {
@@ -482,6 +474,9 @@ li {
 }
 .game .hover {
   background-color: #def;
+}
+.game .highlight {
+  background-color: #fe7f9c;
 }
 .game .incorrect {
   background-color: #f7d0d6;
@@ -499,4 +494,49 @@ li {
   text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.player-photo {
+  width: 90%;
+}
+
+.player-name {
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-bottom: 3px;
+}
+
+.player1-wrapper {
+  margin-left: 5px 10px;
+  border-bottom: 1rem solid transparent;
+  border-color: #fe7f9c;
+}
+
+.player0-wrapper {
+  border-bottom: 1rem solid transparent;
+  border-color: #4a90e2;
+}
+/*fill: #fc3d3e;*/
+
+.player-card {
+  background-color: #4386a9;
+  border: 2px solid #344861;
+  width: 16vw;
+  height: 11vw;
+  margin-bottom: 1vw;
+  display: inline-block;
+  padding: 0px;
+  color: #fff;
+}
+
+.filled-mistake {
+  width: 150%;
+}
+
+.wait-match {
+  padding-top: 5vw;
+}
+
+.cancel-button {
+  width: 40%;
 }

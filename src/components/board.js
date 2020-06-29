@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import BoardRow from "./boardRow";
-import EndGame from "./endGame";
+import EndSudoku from "./endSudoku";
+import EndDudoku from "./endDudoku";
 
 class Board extends Component {
   renderBoardRows = () => {
@@ -38,23 +39,48 @@ class Board extends Component {
     );
   };
 
-  renderEndGame = (reason, remainingCells, timeExpired) => {
-    return (
-      <EndGame
-        reason={reason}
-        remainingCells={remainingCells}
-        timeExpired={timeExpired}
-      />
-    );
+  renderEndGame = (mode, reason, winner, remainingCells, timeExpired) => {
+    if (mode === "sudoku") {
+      return (
+        <EndSudoku
+          reason={reason}
+          remainingCells={remainingCells}
+          timeExpired={timeExpired}
+        />
+      );
+    }
+    if (mode === "dudoku") {
+      return (
+        <EndDudoku
+          reason={reason}
+          winner={winner}
+          remainingCells={remainingCells}
+          timeExpired={timeExpired}
+        />
+      );
+    }
   };
 
   render() {
-    const { ended, reason, remainingCells, timeExpired } = this.props;
+    const {
+      mode,
+      ended,
+      reason,
+      winner,
+      remainingCells,
+      timeExpired
+    } = this.props;
     return (
       <div className="game-container">
         <div id="game" className="game">
           {ended
-            ? this.renderEndGame(reason, remainingCells, timeExpired)
+            ? this.renderEndGame(
+                mode,
+                reason,
+                winner,
+                remainingCells,
+                timeExpired
+              )
             : this.renderGame()}
         </div>
       </div>

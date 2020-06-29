@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import dudoku from "../service/dudoku";
 import user from "../service/user";
 import emitter from "../service/emitter";
+import topic from "../service/topic";
+import WaitMatch from "./waitMatch";
 import Board from "./board";
 import Numpad from "./numpad";
 import PlayerCard from "./playerCard";
@@ -12,6 +14,8 @@ class Dudoku extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      created: false,
+      id: 0,
       board: [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -84,6 +88,7 @@ class Dudoku extends Component {
     const state = await dudoku.getSudokuAndSolution(level);
     const { board, solution, origin, players } = state;
     state.color = this.setIncorrectColor(board, solution, this.state.color);
+    state.created = true;
     state.digitColor = this.setDigitColor(
       players,
       origin,
@@ -95,10 +100,9 @@ class Dudoku extends Component {
 
   setDigitColor = (players, origin, digitColor) => {
     const { currentUser } = this.state;
-    console.log(players);
-    console.log(currentUser);
-    const currentUserOrigin = currentUser === players[0] ? 2 : 3;
-    const opponentOrigin = currentUser === players[0] ? 3 : 2;
+    const { email } = currentUser;
+    const currentUserOrigin = email === players[0].email ? 2 : 3;
+    const opponentOrigin = email === players[0].email ? 3 : 2;
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         if (origin[i][j] === currentUserOrigin) digitColor[i][j] = "player1";
@@ -147,23 +151,104 @@ class Dudoku extends Component {
   };
 
   getCurrentUser = async () => {
-    const res = await user.getCurrentUser();
-    if (res === null) return;
-    const { data } = res;
-    if (data != null) {
-      this.setState({ currentUser: data.email });
-    }
+    const currentUser = user.getCurrentUser();
+    if (currentUser === null) return;
+    this.setState({ currentUser });
+  };
+
+  highlightCell = (x, y) => {
+    const { color } = this.state;
+    const oldColor = color[x][y];
+    color[x][y] = "highlight";
+    this.setState({ color });
+    setTimeout(() => {
+      if (color[x][y] === "highlight") {
+        color[x][y] = oldColor;
+        this.setState({ color });
+      }
+    }, 200);
+  };
+
+  handleOpponentFill = message => {
+    const { x, y, value, filled, mistakes, remainingCells } = JSON.parse(
+      message.body
+    );
+    const {
+      board,
+      solution,
+      color: myColor,
+      digitColor,
+      filled: myFilled,
+      mistakes: myMistakes
+    } = this.state;
+    board[x][y] = value;
+    digitColor[x][y] = "player2";
+    myFilled[1] = filled;
+    myMistakes[1] = mistakes;
+    const color = this.setIncorrectColor(board, solution, myColor);
+    this.setState({
+      board,
+      digitColor,
+      color,
+      filled: myFilled,
+      mistakes: myMistakes,
+      remainingCells
+    });
+    this.highlightCell(x, y);
+  };
+
+  handleOpponentDelete = message => {
+    const { x, y, filled, remainingCells } = JSON.parse(message.body);
+    const { board, digitColor, filled: myFilled } = this.state;
+    board[x][y] = 0;
+    digitColor[x][y] = "";
+    myFilled[1] = filled;
+    this.setState({
+      board,
+      digitColor,
+      filled: myFilled,
+      remainingCells
+    });
+    this.highlightCell(x, y);
+  };
+
+  handleOpponentEnd = message => {
+    const { reason, timeExpired, winner, remainingCells } = JSON.parse(
+      message.body
+    );
+    this.setState({
+      ended: true,
+      reason,
+      timeExpired,
+      winner,
+      remainingCells
+    });
+  };
+
+  subscribeToOpponentActions = () => {
+    const { id, players, currentUser } = this.state;
+    const { email } = currentUser;
+    const handlers = {
+      handleFill: this.handleOpponentFill,
+      handleDelete: this.handleOpponentDelete,
+      handleEnd: this.handleOpponentEnd
+    };
+    const currentUserOrigin = email === players[0].email ? 2 : 3;
+    topic.subscribe("/opponent-actions", id, currentUserOrigin, handlers);
   };
 
   async componentDidMount() {
     this.getCurrentUser();
     const timeExpired = await this.getSudokuAndSolution();
+    this.subscribeToOpponentActions();
     this.endGameAfterTimeout(timeExpired);
     document.addEventListener("keydown", this.handleKeyDown, false);
   }
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown, false);
+    this.setState({ created: false });
+    topic.disconnect();
   }
 
   handleSelectCell = cell => {
@@ -192,22 +277,38 @@ class Dudoku extends Component {
   };
 
   handleFillCell = async num => {
-    const { ended, origin, board, selectedCell, digitColor } = this.state;
+    const {
+      ended,
+      origin,
+      board,
+      mistakes,
+      filled,
+      selectedCell,
+      digitColor
+    } = this.state;
     if (ended || !selectedCell || !board) return;
     const [x, y] = selectedCell;
     if (origin[x][y] === 1) return;
     try {
-      const { result, mistakes, remainingCells } = await dudoku.fillCell(
-        selectedCell,
-        num
-      );
+      const {
+        result,
+        mistakes: myMistake,
+        remainingCells
+      } = await dudoku.fillCell(selectedCell, num);
       if (result === "incorrect") {
+        mistakes[0] = myMistake;
         this.setState({
           mistakes
         });
-        if (mistakes >= 3) {
+        if (mistakes[0] >= 3) {
           this.handleEndGame("mistake");
         }
+      }
+      if (result === "correct") {
+        filled[0] += 1;
+        this.setState({
+          filled
+        });
       }
       board[x][y] = num;
       digitColor[x][y] = "player1";
@@ -215,7 +316,7 @@ class Dudoku extends Component {
         board,
         digitColor
       });
-      if (remainingCells == 0) {
+      if (remainingCells === 0) {
         this.handleEndGame("complete");
       }
       this.setColor(selectedCell);
@@ -231,7 +332,7 @@ class Dudoku extends Component {
     const [x, y] = selectedCell;
     if (origin[x][y] === 1) return;
     try {
-      const result = await dudoku.deleteCell(selectedCell);
+      await dudoku.deleteCell(selectedCell);
       board[x][y] = 0;
       digitColor[x][y] = "";
       this.setState({
@@ -320,23 +421,46 @@ class Dudoku extends Component {
 
   render() {
     const {
+      created,
       board,
       color,
       digitColor,
       mistakes,
+      filled,
+      players: myPlayers,
+      currentUser,
+      winner,
       ended,
       reason,
       timeExpired,
       remainingCells
     } = this.state;
-    return (
+    let players = null;
+    if (myPlayers) {
+      players = myPlayers.slice(0);
+    }
+    if (players && players[0].email !== currentUser.email) {
+      const temp = players[1];
+      players[1] = players[0];
+      players[0] = temp;
+    }
+    return !created ? (
+      <div className="game-form">
+        <WaitMatch />
+      </div>
+    ) : (
       <div className="game-form">
         {timeExpired === -1 ? null : (
           <Timer startTime={timeExpired} ended={ended} />
         )}
         <div className="row text-center p-0">
           <div className="col-md-3 text-center p-0">
-            <PlayerCard mistakes={mistakes} />
+            <PlayerCard
+              id={0}
+              mistakes={mistakes}
+              filled={filled}
+              players={players}
+            />
             <Numpad
               ended={ended}
               handleFillCell={this.handleFillCell}
@@ -346,7 +470,9 @@ class Dudoku extends Component {
           </div>
           <div className="col-md-6 p-0">
             <Board
+              mode="dudoku"
               ended={ended}
+              winner={winner}
               reason={reason}
               remainingCells={remainingCells}
               timeExpired={timeExpired}
@@ -359,7 +485,12 @@ class Dudoku extends Component {
             />
           </div>
           <div className="col-md-3 p-0">
-            <PlayerCard />
+            <PlayerCard
+              id={1}
+              mistakes={mistakes}
+              filled={filled}
+              players={players}
+            />
             <Numpad
               ended={ended}
               handleFillCell={this.handleFillCell}

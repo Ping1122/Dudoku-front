@@ -13,13 +13,11 @@ async function registerUser(email, username, password) {
   });
 }
 
-async function getCurrentUser() {
+function getCurrentUser() {
   try {
-    const email = decodeJwt(auth.getJwt());
-    const currentUser = await http.get(`${apiEndpoint}/me`, {
-      username: email
-    });
-    return currentUser;
+    const creds = decodeJwt(auth.getJwt());
+    const [email, username] = creds.split(" ");
+    return { email, username };
   } catch (ex) {
     return null;
   }
